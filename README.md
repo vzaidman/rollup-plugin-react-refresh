@@ -16,6 +16,11 @@ import refresh from 'rollup-plugin-react-refresh';
 module.exports = {
     plugins: [
         process.env.NODE_ENV === 'development' && refresh()
+        // If your "react-refresh" is not installed directly next to "rollup-plugin-react-refresh" You might need to pass the option "reactRefreshRuntimeFilePathRelativeToPlugin".
+        // See https://github.com/PepsRyuu/rollup-plugin-react-refresh/pull/10
+        // process.env.NODE_ENV === 'development' && refresh({
+        //    reactRefreshRuntimeFilePathRelativeToPlugin: 'path/to/some/other/node_modules/react-refresh/cjs/react-refresh-runtime.development.js'
+        // })
     ]
 }
 ```

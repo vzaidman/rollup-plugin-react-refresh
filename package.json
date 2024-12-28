@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-react-refresh",
-  "version": "0.0.3",
+  "version": "0.0.4-custom",
   "main": "index.js",
   "author": "Paul Sweeney",
   "license": "MIT",

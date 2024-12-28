@@ -1,10 +1,31 @@
 let fs = require('fs');
 
-let runtime = fs.readFileSync(require.resolve('react-refresh/cjs/react-refresh-runtime.development.js'), 'utf8');
-
-runtime = runtime.replace('process.env.NODE_ENV', JSON.stringify(process.env.NODE_ENV));
+const DEFAULT_REACT_REFRESH_PATH = '../react-refresh/cjs/react-refresh-runtime.development.js';
 
 function ReactRefresh (opts = {}) {
+    opts.reactRefreshRuntimeFilePathRelativeToPlugin = (
+        opts.reactRefreshRuntimeFilePathRelativeToPlugin ||
+        DEFAULT_REACT_REFRESH_PATH
+    );
+
+    let runtime;
+    try {
+        runtime = fs.readFileSync(require.resolve(opts.reactRefreshRuntimeFilePathRelativeToPlugin), 'utf8');
+    }
+    catch(e) {
+        throw new Error(
+            `[rollup-plugin-react-refresh] ERROR
+Node.js forces "rollup-plugin-react-refresh" to require "react-refresh" via a relative import.
+It seems like the ${opts.reactRefreshRuntimeFilePathRelativeToPlugin == DEFAULT_REACT_REFRESH_PATH ? 'default ': ''}path "${opts.reactRefreshRuntimeFilePathRelativeToPlugin}" did not resolve the file.".
+The resolution has to be from the "rollup-plugin-react-refresh" plugin folder at: "${__dirname}".
+Please fix the plugin option "reactRefreshRuntimeFilePathRelativeToPlugin".
+See https://github.com/PepsRyuu/rollup-plugin-react-refresh/pull/10 for more info.`,
+            {cause: e}
+        );
+    }
+
+    runtime = runtime.replace('process.env.NODE_ENV', JSON.stringify(process.env.NODE_ENV));
+
     return {
         nollupBundleInit () {
             return `
